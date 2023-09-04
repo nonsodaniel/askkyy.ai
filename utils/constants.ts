@@ -7,6 +7,7 @@ import {
   Settings,
   VideoIcon,
 } from "lucide-react";
+import * as z from "zod";
 
 export const routes = [
   {
@@ -60,3 +61,9 @@ export const routes = [
     bgColor: "bg-pink-500/10",
   },
 ];
+
+export const formSchema = z.object({
+  prompt: z.string().min(1, {
+    message: "Prompt can not be empty",
+  }),
+});
