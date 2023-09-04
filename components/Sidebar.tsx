@@ -14,6 +14,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { usePathname } from "next/navigation";
+import { routes } from "@/utils/constants";
 
 const monsterat = Poppins({
   weight: "600",
@@ -25,51 +26,6 @@ const Sidebar = () => {
   const activePathColor = (href: string) =>
     href === pathName ? "text-white bg-white/10" : "text-zinc-100";
 
-  const routes = [
-    {
-      label: "Dashboard",
-      icon: LayoutDashboard,
-      href: "/dashboard",
-      color: "text-green-500",
-    },
-    {
-      label: "Conversation",
-      icon: MessageSquare,
-      href: "/converations",
-      color: "text-yellow-500",
-    },
-    {
-      label: "Image Generator",
-      icon: ImageIcon,
-      href: "/image",
-      color: "text-orange-500",
-    },
-    {
-      label: "Music Generator",
-      icon: Music,
-      href: "/music",
-      color: "text-orange-500",
-    },
-
-    {
-      label: "Video Generator",
-      icon: VideoIcon,
-      href: "/video",
-      color: "text-red-500",
-    },
-    {
-      label: "Code Generator",
-      icon: CodeIcon,
-      href: "/code",
-      color: "text-purple-300",
-    },
-    {
-      label: "Settings",
-      icon: Settings,
-      href: "/settings",
-      color: "text-pink-300",
-    },
-  ];
   return (
     <div className="space-y-4 py-4 flex flex-col h-full bg-[#625df5b3] text-white">
       <div className="px-3 py-2 flex-1">
