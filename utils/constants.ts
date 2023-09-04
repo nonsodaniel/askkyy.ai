@@ -19,7 +19,7 @@ export const routes = [
   {
     label: "Conversation",
     icon: MessageSquare,
-    href: "/converations",
+    href: "/conversation",
     color: "text-yellow-500",
     bgColor: "bg-yellow-500/10",
   },
@@ -28,7 +28,7 @@ export const routes = [
     icon: ImageIcon,
     href: "/image",
     color: "text-orange-500",
-    bgColor: "bg-orange-500/10",
+    bgColor: "bg-emerald-500/10",
   },
   {
     label: "Music Generator",
