@@ -67,3 +67,25 @@ export const formSchema = z.object({
     message: "Prompt can not be empty",
   }),
 });
+
+export const conversationList = [
+  { content: "A colorful painting of a serene landscape.", role: "user" },
+  { content: "An important memo about the upcoming meeting.", role: "admin" },
+  {
+    content: "A recipe for delicious homemade chocolate chip cookies.",
+    role: "user",
+  },
+  { content: "Confidential financial report for Q3.", role: "admin" },
+  { content: "A funny meme that made me laugh out loud.", role: "user" },
+  { content: "Security protocol documentation for the server.", role: "admin" },
+  {
+    content: "Notes from yesterday's team brainstorming session.",
+    role: "user",
+  },
+  { content: "Access control list for the company's network.", role: "admin" },
+  { content: "A cute picture of a fluffy kitten.", role: "user" },
+  {
+    content: "Emergency evacuation plan for the office building.",
+    role: "admin",
+  },
+];

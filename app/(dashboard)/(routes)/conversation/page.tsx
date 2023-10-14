@@ -1,6 +1,6 @@
 "use client";
 import Header from "@/components/Header";
-import { formSchema } from "@/utils/constants";
+import { conversationList, formSchema } from "@/utils/constants";
 import { MessageSquare } from "lucide-react";
 import React, { useState } from "react";
 import { Form, useForm, FormProvider } from "react-hook-form";
@@ -96,6 +96,7 @@ const ConversationPage = () => {
               <Loading />
             </div>
           )}
+          {/* change conversationList to the actual response from OpenAI */}
           {messages.length === 0 && !isLoading && (
             <Empty label="No conversation started." />
           )}
