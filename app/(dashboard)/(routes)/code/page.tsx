@@ -35,7 +35,9 @@ const CodePage = () => {
     },
   });
   const isLoading = form.formState.isSubmitting;
-  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+  const handleSubmit = async (
+    values: z.infer<typeof formSchema> | FieldValues
+  ) => {
     console.log(values);
     try {
       const userMessage: ChatCompletionRequestMessage = {
