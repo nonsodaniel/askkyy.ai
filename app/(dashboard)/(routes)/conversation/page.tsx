@@ -31,7 +31,7 @@ const ConversationPage = () => {
     },
   });
   const isLoading = form.formState.isSubmitting;
-  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
     try {
       const userMessage: ChatCompletionRequestMessage = {
@@ -66,9 +66,9 @@ const ConversationPage = () => {
       />
       <div className="px-4 lg:px-8">
         <div className="">
-          <FormProvider {...form}>
-            <Form
-              onSubmit={form.handleSubmit(handleSubmit)}
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
               className="rounded-lg  border w-full  p-4 px-3 md:px-6 focus-within:shadow-sm grid grid-cols-12 gap-2"
             >
               <FormField
@@ -95,8 +95,8 @@ const ConversationPage = () => {
               >
                 Generate
               </Button>
-            </Form>
-          </FormProvider>
+            </form>
+          </Form>
         </div>
         <div className="space-y-4 mt-4">
           {isLoading && (
