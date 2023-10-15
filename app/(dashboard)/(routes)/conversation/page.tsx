@@ -1,6 +1,6 @@
 "use client";
 import Header from "@/components/Header";
-import { conversationList, formSchema } from "@/utils/constants";
+import { formSchema } from "@/utils/constants";
 import { MessageSquare } from "lucide-react";
 import React, { useState } from "react";
 import { Form, useForm, FormProvider } from "react-hook-form";
@@ -43,7 +43,7 @@ const ConversationPage = () => {
       form.reset();
     } catch (error) {
     } finally {
-      router.refresh();
+      router.refresh(); // use to re-hrydrate all server components fetching the newest update from the server (database)
     }
   };
 
@@ -72,7 +72,7 @@ const ConversationPage = () => {
                       <Input
                         className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading}
-                        placeholder="How many planets do we have?"
+                        placeholder="Ask or tell me anything! What's on your mind?"
                         {...field}
                       />
                     </FormControl>
@@ -100,7 +100,7 @@ const ConversationPage = () => {
           {messages.length === 0 && !isLoading && (
             <Empty label="No conversation started." />
           )}
-          <div className="flex flex-col-reverse gap-y-4">
+          <div className="flex flex-col gap-y-4">
             {messages.map((message) => (
               <div
                 key={message.content}

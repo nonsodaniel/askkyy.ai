@@ -3,13 +3,7 @@ import Header from "@/components/Header";
 import { formSchema } from "@/utils/constants";
 import { Code } from "lucide-react";
 import React, { useState } from "react";
-import {
-  Form,
-  useForm,
-  FormProvider,
-  FormSubmitHandler,
-  FieldValues,
-} from "react-hook-form";
+import { Form, useForm, FormProvider, FieldValues } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormControl, FormField, FormItem } from "@/components/ui/form";

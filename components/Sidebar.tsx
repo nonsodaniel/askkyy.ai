@@ -15,13 +15,17 @@ import Link from "next/link";
 import React from "react";
 import { usePathname } from "next/navigation";
 import { routes } from "@/utils/constants";
+import { FreeCounter } from "./FreeCounter";
 
 const monsterat = Poppins({
   weight: "600",
   subsets: ["latin"],
 });
 
-const Sidebar = () => {
+interface ISidebarProps {
+  apiLimitCount: number;
+}
+const Sidebar = ({ apiLimitCount = 0 }: ISidebarProps) => {
   const pathName = usePathname();
   const activePathColor = (href: string) =>
     href === pathName ? "text-white bg-white/10" : "text-zinc-100";
@@ -59,6 +63,7 @@ const Sidebar = () => {
           ))}
         </div>
       </div>
+      <FreeCounter apiLimitCount={apiLimitCount} isPro={false} />
     </div>
   );
 };
