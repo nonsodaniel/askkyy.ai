@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { Loader, Music, Send } from "lucide-react";
+import { Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
@@ -16,10 +16,12 @@ import { formSchema } from "./constants";
 import Header from "@/components/Header";
 import Loading from "@/components/ui/Loading";
 import { Empty } from "@/components/ui/Empty";
+import { useUpgradeModal } from "@/hooks/useModal";
 
 const MusicPage = () => {
   const router = useRouter();
   const [music, setMusic] = useState<string>();
+  const upgradeModal = useUpgradeModal();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -41,6 +43,7 @@ const MusicPage = () => {
       form.reset();
     } catch (error: any) {
       if (error?.response?.status === 403) {
+        upgradeModal.onOpen();
       } else {
         toast.error("Something went wrong.");
       }
@@ -83,7 +86,7 @@ const MusicPage = () => {
                     <Input
                       className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                       disabled={isLoading}
-                      placeholder="Piano solo"
+                      placeholder="Describe your music"
                       {...field}
                     />
                   </FormControl>

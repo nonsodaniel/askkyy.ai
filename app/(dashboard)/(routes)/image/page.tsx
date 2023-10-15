@@ -26,10 +26,12 @@ import { amountOptions, formSchema, resolutionOptions } from "./constants";
 import Header from "@/components/Header";
 import Loading from "@/components/ui/Loading";
 import { Empty } from "@/components/ui/Empty";
+import { useUpgradeModal } from "@/hooks/useModal";
 
 const ImagePage = () => {
   const router = useRouter();
   const [photos, setPhotos] = useState<string[]>([]);
+  const upgradeModal = useUpgradeModal();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,6 +54,7 @@ const ImagePage = () => {
       setPhotos(urls);
     } catch (error: any) {
       if (error?.response?.status === 403) {
+        upgradeModal.onOpen();
       } else {
         toast.error("Something went wrong.");
       }

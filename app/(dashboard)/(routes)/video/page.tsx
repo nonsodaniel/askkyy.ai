@@ -17,11 +17,14 @@ import { formSchema } from "./constants";
 import Header from "@/components/Header";
 import { Empty } from "@/components/ui/Empty";
 import Loading from "@/components/ui/Loading";
+import { useUpgradeModal } from "@/hooks/useModal";
 
 const VideoPage = () => {
   const router = useRouter();
 
   const [video, setVideo] = useState<string>();
+
+  const upgradeModal = useUpgradeModal();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -42,8 +45,9 @@ const VideoPage = () => {
       form.reset();
     } catch (error: any) {
       if (error?.response?.status === 403) {
+        upgradeModal.onOpen();
       } else {
-        toast.error("An error occured.");
+        toast.error("Something went wrong.");
       }
     } finally {
       router.refresh();
