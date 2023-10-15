@@ -34,7 +34,9 @@ const Sidebar = () => {
           className="flex items-center justify-center pl-3 mb-14"
         >
           <h1 className={cn(`font-bold text-center`, monsterat.className)}>
-            <span className="text-4xl text-orange-400">Askkyy</span>
+            <span className="text-4xl font-extrabold text-orange-400">
+              Askkyy
+            </span>
             <span>.ai</span>
           </h1>
         </Link>
