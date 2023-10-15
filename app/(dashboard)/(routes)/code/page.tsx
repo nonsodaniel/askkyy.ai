@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import { formSchema } from "@/utils/constants";
 import { Code } from "lucide-react";
 import React, { useState } from "react";
-import { Form, useForm, FormProvider, FieldValues } from "react-hook-form";
+import { Form, useForm, FieldValues } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormControl, FormField, FormItem } from "@/components/ui/form";
@@ -61,8 +61,8 @@ const CodePage = () => {
       />
       <div className="px-4 lg:px-8">
         <div className="">
-          <FormProvider {...form}>
-            <Form
+          <Form {...form}>
+            <form
               onSubmit={form.handleSubmit(handleSubmit)}
               className="rounded-lg  border w-full  p-4 px-3 md:px-6 focus-within:shadow-sm grid grid-cols-12 gap-2"
             >
@@ -90,8 +90,8 @@ const CodePage = () => {
               >
                 Generate
               </Button>
-            </Form>
-          </FormProvider>
+            </form>
+          </Form>
         </div>
         <div className="space-y-4 mt-4">
           {isLoading && (
