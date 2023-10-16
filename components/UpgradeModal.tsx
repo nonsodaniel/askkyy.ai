@@ -25,7 +25,7 @@ export const UpgradeModal = () => {
   const upgradeModal = useUpgradeModal();
   const [loading, setLoading] = useState(false);
 
-  const onSubscribe = async () => {
+  const handleSubscribe = async () => {
     try {
       setLoading(true);
       const response = await axios.get("/api/stripe");
@@ -70,7 +70,7 @@ export const UpgradeModal = () => {
         <DialogFooter>
           <Button
             disabled={loading}
-            onClick={onSubscribe}
+            onClick={handleSubscribe}
             size="lg"
             variant="premium"
             className="w-full"
