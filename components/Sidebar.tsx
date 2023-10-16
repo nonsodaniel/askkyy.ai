@@ -1,16 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
-import {
-  CodeIcon,
-  ImageIcon,
-  LayoutDashboard,
-  MessageSquare,
-  Music,
-  Settings,
-  VideoIcon,
-} from "lucide-react";
-import { Montserrat, Poppins } from "next/font/google";
-import Image from "next/image";
+
+import { Poppins } from "next/font/google";
 import Link from "next/link";
 import React from "react";
 import { usePathname } from "next/navigation";
@@ -24,8 +15,9 @@ const monsterat = Poppins({
 
 interface ISidebarProps {
   apiLimitCount: number;
+  isPro: boolean;
 }
-const Sidebar = ({ apiLimitCount = 0 }: ISidebarProps) => {
+const Sidebar = ({ apiLimitCount = 0, isPro }: ISidebarProps) => {
   const pathName = usePathname();
   const activePathColor = (href: string) =>
     href === pathName ? "text-white bg-white/10" : "text-zinc-100";
@@ -63,7 +55,7 @@ const Sidebar = ({ apiLimitCount = 0 }: ISidebarProps) => {
           ))}
         </div>
       </div>
-      <FreeCounter apiLimitCount={apiLimitCount} isPro={false} />
+      {!isPro && <FreeCounter apiLimitCount={apiLimitCount} isPro={false} />}
     </div>
   );
 };

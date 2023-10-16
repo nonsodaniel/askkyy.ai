@@ -6,8 +6,9 @@ import { stripe } from "@/lib/stripe";
 import prismaDb from "@/lib/prismaDb";
 
 export async function POST(req: Request) {
+  console.log("got here");
   const body = await req.text();
-  const signature = headers().get("Stripe-Signature") as string;
+  const signature = headers().get("stripe-signature") as string;
 
   let event: Stripe.Event;
 
@@ -27,7 +28,7 @@ export async function POST(req: Request) {
     const subscription = await stripe.subscriptions.retrieve(
       session.subscription as string
     );
-    console.log("got here", { session, subscription });
+
     if (!session?.metadata?.userId) {
       return new NextResponse("User id is required", { status: 400 });
     }

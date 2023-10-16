@@ -21,7 +21,7 @@ const MobileSidebar = ({ apiLimitCount = 0, isPro = false }) => {
         </Button>
       </SheetTrigger>
       <SheetContent side={"left"} className="p-0">
-        <Sidebar apiLimitCount={apiLimitCount} />
+        <Sidebar apiLimitCount={apiLimitCount} isPro={isPro} />
       </SheetContent>
     </Sheet>
   );
