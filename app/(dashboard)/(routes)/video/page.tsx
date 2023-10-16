@@ -60,8 +60,8 @@ const VideoPage = () => {
         title="Video Generation"
         description="Generate your desired Video."
         icon={FileAudio}
-        iconColor="text-orange-700"
-        bgColor="bg-orange-700/10"
+        iconColor="text-blue-300"
+        bgColor="bg-blue-300/10"
       />
       <div className="px-4 lg:px-8">
         <Form {...form}>

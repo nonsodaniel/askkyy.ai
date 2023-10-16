@@ -64,8 +64,8 @@ const CodePage = () => {
         title={"Code Generation Section"}
         description={"Welcome to your AI powered Conversation"}
         icon={Code}
-        iconColor="text-blue-500"
-        bgColor="bg-blue-500/10"
+        iconColor="text-emerald-800"
+        bgColor="bg-emerald-800/10"
       />
       <div className="px-4 lg:px-8">
         <div className="">

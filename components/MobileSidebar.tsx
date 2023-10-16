@@ -4,7 +4,6 @@ import { Button } from "./ui/button";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import Sidebar from "./Sidebar";
-import { getApiLimitCount } from "@/lib/api-limit";
 
 const MobileSidebar = ({ apiLimitCount = 0, isPro = false }) => {
   const [isMounted, setIsMounted] = useState(false);

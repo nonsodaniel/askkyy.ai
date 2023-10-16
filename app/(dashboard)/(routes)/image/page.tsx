@@ -69,8 +69,8 @@ const ImagePage = () => {
         title="Image Generation"
         description="Generate your Image."
         icon={ImageIcon}
-        iconColor="text-pink-700"
-        bgColor="bg-pink-700/10"
+        iconColor="text-yellow-00"
+        bgColor="bg-yellow-00/10"
       />
       <div className="px-4 lg:px-8">
         <Form {...form}>

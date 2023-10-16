@@ -61,8 +61,8 @@ const ConversationPage = () => {
         title={"Conversation Section"}
         description={"Welcome to your AI powered Conversation"}
         icon={MessageSquare}
-        iconColor="text-yellow-500"
-        bgColor="bg-yellow-500/10"
+        iconColor="text-lime-500"
+        bgColor="bg-lime-500/10"
       />
       <div className="px-4 lg:px-8">
         <div className="">
@@ -100,11 +100,10 @@ const ConversationPage = () => {
         </div>
         <div className="space-y-4 mt-4">
           {isLoading && (
-            <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
+            <div className="p-8 rounded-lg w-full flex items-center justify-center">
               <Loading />
             </div>
           )}
-          {/* change conversationList to the actual response from OpenAI */}
           {messages.length === 0 && !isLoading && (
             <Empty label="No conversation started." />
           )}
