@@ -1,8 +1,6 @@
-import Image from "next/image";
-
 const Loading = () => {
   return (
-    <div className="flex flex-column">
+    <div className="flex flex-col">
       <div className="flex items-center justify-center rounded-full animate-spin">
         <svg
           xmlns="http://www.w3.org/2000/svg"
