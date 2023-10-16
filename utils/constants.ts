@@ -35,7 +35,7 @@ export const routes = [
     label: "Music Generator",
     icon: Music,
     href: "/music",
-    color: "text-teal-200",
+    color: "text-teal-500",
     bgColor: "bg-teal-200/10",
   },
 
@@ -50,8 +50,8 @@ export const routes = [
     label: "Code Generator",
     icon: CodeIcon,
     href: "/code",
-    color: "text-emerald-900",
-    bgColor: "bg-emerald-900",
+    color: "text-emerald-500",
+    bgColor: "bg-emerald-500",
   },
   {
     label: "Settings",

@@ -1,6 +1,6 @@
 const Loading = () => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col items-center justify-cente">
       <div className="flex items-center justify-center rounded-full animate-spin">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -32,6 +32,7 @@ const Loading = () => {
         <span className="text-[#625df5b3] font-extrabold text-1xl">Askkyy</span>{" "}
         is thinking...
       </p>
+      <b>Note: This might take some time.</b>
     </div>
   );
 };
