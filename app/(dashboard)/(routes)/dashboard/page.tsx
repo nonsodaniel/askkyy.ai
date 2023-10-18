@@ -11,15 +11,15 @@ export default function HomePage() {
   const router = useRouter();
 
   return (
-    <div>
-      <div className="mb-8 space-y-4">
-        <h2 className="text-2xl md:text-4xl font-bold text-center">
-          Welcome to the World of AI
-        </h2>
-        <p className="text-muted-foreground font-light text-sm md:text-lg text-center">
-          Chat with the smartest AI - Explore and enjoy the power of AI
-        </p>
-      </div>
+    <div className="mb-8 space-y-4">
+      <h2 className="text-2xl md:text-4xl font-bold text-center">
+        🤗 Welcome to the World of Artificial Intelligence
+      </h2>
+      <p className="text-muted-foreground font-light text-sm md:text-lg text-center">
+        Ask Questions, solve problems, get ideas and have fun with{" "}
+        <span className="text-1xl font-semibold ">Askkyy </span>
+        Intelligence. ⚡
+      </p>
       <div className="px-4 md:px-20 lg:px-32 space-y-4">
         {routes.map((route) => (
           <Card
