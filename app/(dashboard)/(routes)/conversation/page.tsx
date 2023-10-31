@@ -41,6 +41,7 @@ const ConversationPage = () => {
       const latestMessages = [...messages, userMessage];
       const response = await axios.post("/api/conversation", {
         messages: latestMessages,
+        prompt: values.prompt,
       });
       setMessages((current) => [...current, userMessage, response.data]);
       form.reset();

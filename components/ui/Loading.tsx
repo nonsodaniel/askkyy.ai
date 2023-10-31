@@ -23,8 +23,8 @@ const Loading = () => {
             fill="none"
             stroke="#e0e0e0"
             strokeWidth="5"
-            stroke-dasharray="180 180"
-            stroke-dashoffset="90"
+            strokeDasharray="180 180"
+            strokeDashoffset="90"
           ></circle>
         </svg>
       </div>
