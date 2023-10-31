@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import { incrementApiLimit, checkApiLimit } from "@/lib/api-limit";
 import { checkSubscription } from "@/lib/subscription";
+import { saveResponseToFirebase } from "@/utils/helpers";
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN!,
@@ -32,7 +33,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const response = await replicate.run(
+    const response: any = await replicate.run(
       "anotherjesse/zeroscope-v2-xl:71996d331e8ede8ef7bd76eba9fae076d31792e4ddf4ad057779b443d6aea62f",
       {
         input: {
@@ -41,11 +42,22 @@ export async function POST(req: Request) {
       }
     );
 
-    if (!isPro) {
-      await incrementApiLimit();
-    }
+    if (response) {
+      const requestData = {
+        question: prompt,
+        answer: response.JSON.stringify(response),
+        createdBy: userId,
+        id: Date.now(),
+      };
 
-    return NextResponse.json(response);
+      saveResponseToFirebase(requestData, "Videos");
+
+      if (!isPro) {
+        await incrementApiLimit();
+      }
+
+      return NextResponse.json(response);
+    }
   } catch (error) {
     console.log("[VIDEO_ERROR]", error);
     return new NextResponse("Internal Error", { status: 500 });
