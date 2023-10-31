@@ -35,7 +35,6 @@ const CodePage = () => {
   const handleSubmit = async (
     values: z.infer<typeof formSchema> | FieldValues
   ) => {
-    console.log(values);
     try {
       const userMessage: ChatCompletionRequestMessage = {
         role: "user",
@@ -44,6 +43,7 @@ const CodePage = () => {
       const latestMessages = [...messages, userMessage];
       const response = await axios.post("/api/code", {
         messages: latestMessages,
+        prompt: values.prompt,
       });
       setMessages((current) => [...current, userMessage, response.data]);
       form.reset();

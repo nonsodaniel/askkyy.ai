@@ -51,7 +51,7 @@ export async function POST(req: Request) {
         id: Date.now(),
       };
 
-      saveResponseToFirebase(requestData);
+      saveResponseToFirebase(requestData, "Conversations");
 
       if (!isPro) {
         await incrementApiLimit();
