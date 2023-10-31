@@ -16,8 +16,9 @@ export const LandingPageNavbar = () => {
   return (
     <nav className="p-4 bg-transparent flex items-center justify-between">
       <Link href="/" className="flex items-center">
-        <h1 className={cn("text-2xl font-bold text-white", font.className)}>
-          Askky.ai
+        <h1 className={cn(" font-bold text-white", font.className)}>
+          <span className="text-3xl font-extrabold">Askkyy</span>
+          <span>.ai</span>
         </h1>
       </Link>
       <div className="flex items-center gap-x-2">
