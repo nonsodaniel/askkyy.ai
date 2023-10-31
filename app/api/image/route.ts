@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { Configuration, OpenAIApi } from "openai";
 import { incrementApiLimit, checkApiLimit } from "@/lib/api-limit";
 import { checkSubscription } from "@/lib/subscription";
+import { saveResponseToFirebase } from "@/utils/helpers";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -48,11 +49,22 @@ export async function POST(req: Request) {
       size: resolution,
     });
 
-    if (!isPro) {
-      await incrementApiLimit();
-    }
+    if (response) {
+      const requestData = {
+        question: prompt,
+        answer: JSON.stringify(response.data.data),
+        createdBy: userId,
+        id: Date.now(),
+      };
 
-    return NextResponse.json(response.data.data);
+      saveResponseToFirebase(requestData, "Images");
+
+      if (!isPro) {
+        await incrementApiLimit();
+      }
+
+      return NextResponse.json(response.data.data);
+    }
   } catch (error) {
     console.log("[IMAGE_ERROR]", error);
     return new NextResponse("Internal Error", { status: 500 });
