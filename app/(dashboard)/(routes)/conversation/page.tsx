@@ -2,7 +2,7 @@
 import Header from "@/components/Header";
 import { formSchema } from "@/utils/constants";
 import { MessageSquare } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,9 +19,30 @@ import { UserAvatar } from "@/components/ui/UserAvatar";
 import { BotAvatar } from "@/components/ui/BotAvatar";
 import { toast } from "react-hot-toast";
 import { useUpgradeModal } from "@/hooks/useModal";
+import { fetchResponseFromFirebase } from "@/utils/helpers";
+import { useAuth } from "@clerk/nextjs";
+
+const formatFirebaseData = (firebaseData: any) => {
+  return firebaseData.map((item: any) => {
+    const userMessage = {
+      role: "user",
+      content: item.question,
+    };
+
+    const assistantMessage = {
+      role: "assistant",
+      content: item.answer,
+    };
+
+    return [userMessage, assistantMessage];
+  });
+};
 
 const ConversationPage = () => {
-  const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
+  const { userId } = useAuth();
+  const [messages, setMessages] = useState<ChatCompletionRequestMessage[][]>(
+    []
+  );
   const router = useRouter();
   const upgradeModal = useUpgradeModal();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -32,7 +53,6 @@ const ConversationPage = () => {
   });
   const isLoading = form.formState.isSubmitting;
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     try {
       const userMessage: ChatCompletionRequestMessage = {
         role: "user",
@@ -40,10 +60,11 @@ const ConversationPage = () => {
       };
       const latestMessages = [...messages, userMessage];
       const response = await axios.post("/api/conversation", {
-        messages: latestMessages,
+        messages: latestMessages.flat(),
         prompt: values.prompt,
       });
-      setMessages((current) => [...current, userMessage, response.data]);
+
+      setMessages((current) => [...current, [userMessage, response.data]]);
       form.reset();
     } catch (error: any) {
       if (error?.response?.status === 403) {
@@ -56,6 +77,19 @@ const ConversationPage = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchConversations = async () => {
+      if (userId) {
+        fetchResponseFromFirebase(userId, "Conversations").then((res) => {
+          const formattedMessages = formatFirebaseData(res);
+
+          setMessages(formattedMessages);
+        });
+      }
+    };
+    fetchConversations();
+  }, []);
+  console.log({ messages });
   return (
     <div>
       <Header
@@ -109,19 +143,29 @@ const ConversationPage = () => {
             <Empty label="No conversation started." />
           )}
           <div className="flex flex-col gap-y-4">
-            {messages.map((message) => (
-              <div
-                key={message.content}
-                className={cn(
-                  "p-8 w-full flex items-start gap-x-8 rounded-lg",
-                  message.role === "user"
-                    ? "bg-white border border-black/10"
-                    : "bg-muted"
-                )}
-              >
-                {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
-                <p className="text-sm">{message.content}</p>
-              </div>
+            {messages.map((message, index) => (
+              <>
+                <div
+                  key={index}
+                  className={cn(
+                    "p-8 w-full flex items-start gap-x-8 rounded-lg",
+                    "bg-white border border-black/10"
+                  )}
+                >
+                  <UserAvatar />
+                  <p className="text-sm">{message[0].content}</p>
+                </div>
+                <div
+                  key={index}
+                  className={cn(
+                    "p-8 w-full flex items-start gap-x-8 rounded-lg",
+                    "bg-muted"
+                  )}
+                >
+                  <BotAvatar />
+                  <p className="text-sm">{message[1].content}</p>
+                </div>
+              </>
             ))}
           </div>
         </div>

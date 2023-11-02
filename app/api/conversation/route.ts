@@ -39,6 +39,7 @@ export async function POST(req: Request) {
         { status: 403 }
       );
     }
+    console.log({ prompt });
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages,
@@ -46,7 +47,7 @@ export async function POST(req: Request) {
     if (response) {
       const requestData = {
         question: prompt,
-        answer: response.data.choices[0].message,
+        answer: response.data.choices[0].message?.content,
         createdBy: userId,
         id: Date.now(),
       };
