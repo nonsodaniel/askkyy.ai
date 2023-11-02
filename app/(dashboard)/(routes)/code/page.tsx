@@ -91,7 +91,7 @@ const CodePage = () => {
             messages={messages}
           />
           <div className="flex flex-col gap-y-4">
-            {messages.map((message, index) => {
+            {messages.reverse().map((message, index) => {
               console.log({ message });
               const isMessageArray = Array.isArray(message);
               return (

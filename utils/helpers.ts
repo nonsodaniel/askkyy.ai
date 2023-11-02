@@ -67,7 +67,7 @@ export const fetchPageData = async (
   if (userId) {
     setIsPageDataLoading(true);
     fetchResponseFromFirebase(userId, type).then((res) => {
-      const formattedMessages = formatFirebaseData(res).reverse();
+      const formattedMessages = formatFirebaseData(res);
       setMessages(formattedMessages);
       setIsPageDataLoading(false);
     });

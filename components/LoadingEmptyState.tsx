@@ -15,7 +15,7 @@ const LoadingEmptyState = ({
     <div>
       {isLoading && (
         <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
-          <Loading />
+          <Loading displayText />
         </div>
       )}
       {!isPageDataLoading && messages.length === 0 && !isLoading && (
