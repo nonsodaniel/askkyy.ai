@@ -1,4 +1,7 @@
-const Loading = () => {
+interface ILoadingProps {
+  displayText?: boolean;
+}
+const Loading = ({ displayText }: ILoadingProps) => {
   return (
     <div className="flex flex-col items-center justify-cente">
       <div className="flex items-center justify-center rounded-full animate-spin">
@@ -28,11 +31,17 @@ const Loading = () => {
           ></circle>
         </svg>
       </div>
-      <p>
-        <span className="text-[#625df5b3] font-extrabold text-1xl">Askkyy</span>{" "}
-        is thinking...
-      </p>
-      <b>Note: This might take some time.</b>
+      {displayText && (
+        <>
+          <p>
+            <span className="text-[#625df5b3] font-extrabold text-1xl">
+              Askkyy
+            </span>{" "}
+            is thinking...
+          </p>
+          <b>Note: This might take some time.</b>
+        </>
+      )}
     </div>
   );
 };

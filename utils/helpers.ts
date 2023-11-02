@@ -41,3 +41,35 @@ export const fetchResponseFromFirebase = async (
   } finally {
   }
 };
+
+export const formatFirebaseData = (firebaseData: any) => {
+  return firebaseData.map((item: any) => {
+    const userMessage = {
+      role: "user",
+      content: item.question,
+    };
+
+    const assistantMessage = {
+      role: "assistant",
+      content: item.answer,
+    };
+
+    return [userMessage, assistantMessage];
+  });
+};
+
+export const fetchPageData = async (
+  userId: string,
+  type: string,
+  setMessages: (messages: any) => void,
+  setIsPageDataLoading: React.Dispatch<React.SetStateAction<boolean>>
+) => {
+  if (userId) {
+    setIsPageDataLoading(true);
+    fetchResponseFromFirebase(userId, type).then((res) => {
+      const formattedMessages = formatFirebaseData(res).reverse();
+      setMessages(formattedMessages);
+      setIsPageDataLoading(false);
+    });
+  }
+};
