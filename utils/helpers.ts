@@ -67,7 +67,10 @@ export const fetchPageData = async (
   if (userId) {
     setIsPageDataLoading(true);
     fetchResponseFromFirebase(userId, type).then((res) => {
-      const formattedMessages = formatFirebaseData(res);
+      const formattedMessages =
+        type === "Images"
+          ? formatFirebaseData(res).flat()
+          : formatFirebaseData(res);
       setMessages(formattedMessages);
       setIsPageDataLoading(false);
     });

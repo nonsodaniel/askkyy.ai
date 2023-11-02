@@ -3,7 +3,7 @@
 import * as z from "zod";
 import axios from "axios";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Download, ImageIcon } from "lucide-react";
 import { FieldValues, useForm } from "react-hook-form";
@@ -24,14 +24,24 @@ import {
 
 import { amountOptions, formSchema, resolutionOptions } from "./constants";
 import Header from "@/components/Header";
-import Loading from "@/components/ui/Loading";
-import { Empty } from "@/components/ui/Empty";
 import { useUpgradeModal } from "@/hooks/useModal";
+import { fetchPageData } from "@/utils/helpers";
+import LoadingEmptyState from "@/components/LoadingEmptyState";
+import { UserAvatar } from "@/components/ui/UserAvatar";
+import { cn } from "@/lib/utils";
+import { BotAvatar } from "@/components/ui/BotAvatar";
+import { useAuth } from "@clerk/nextjs";
+interface IMessage {
+  role: "user" | "assistant";
+  content: string | Array<{ url: string }>;
+}
 
 const ImagePage = () => {
+  const { userId } = useAuth();
   const router = useRouter();
-  const [photos, setPhotos] = useState<string[]>([]);
+  const [messages, setMessages] = useState<IMessage[]>([]);
   const upgradeModal = useUpgradeModal();
+  const [isPageDataLoading, setIsPageDataLoading] = useState<boolean>(true);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -46,12 +56,18 @@ const ImagePage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema> | FieldValues) => {
     try {
-      setPhotos([]);
+      const userMessage = {
+        role: "user",
+        content: values.prompt,
+      };
+      const latestMessages = [...messages, userMessage];
+      setMessages(latestMessages);
       const response = await axios.post("/api/image", values);
-
-      const urls = response.data.map((image: { url: string }) => image.url);
-
-      setPhotos(urls);
+      console.log("response", response);
+      setMessages((current) => [
+        ...current,
+        { content: response.data, role: "assistant" },
+      ]);
     } catch (error: any) {
       if (error?.response?.status === 403) {
         upgradeModal.onOpen();
@@ -62,7 +78,10 @@ const ImagePage = () => {
       router.refresh();
     }
   };
-
+  useEffect(() => {
+    if (userId)
+      fetchPageData(userId!, "Images", setMessages, setIsPageDataLoading);
+  }, []);
   return (
     <div>
       <Header
@@ -168,32 +187,55 @@ const ImagePage = () => {
             </Button>
           </form>
         </Form>
-        {isLoading && (
-          <div className="p-20">
-            <Loading />
-          </div>
-        )}
-        {photos.length === 0 && !isLoading && (
-          <Empty label="No images generated." />
-        )}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
-          {photos.map((src) => (
-            <Card key={src} className="rounded-lg overflow-hidden">
-              <div className="relative aspect-square">
-                <Image fill alt="Generated" src={src} />
-              </div>
-              <CardFooter className="p-2">
-                <Button
-                  onClick={() => window.open(src)}
-                  variant="secondary"
-                  className="w-full"
+        <div className="space-y-4 mt-4">
+          <LoadingEmptyState
+            isLoading={isLoading}
+            isPageDataLoading={isPageDataLoading}
+            messages={messages}
+          />
+          <div className="flex flex-col gap-y-4">
+            {messages.map((message, index) => {
+              return (
+                <div
+                  key={index}
+                  className={cn(
+                    "p-8 w-full flex items-start gap-x-8 rounded-lg",
+                    message.role === "user"
+                      ? "bg-white border border-black/10"
+                      : "bg-muted"
+                  )}
                 >
-                  <Download className="h-4 w-4 mr-2" />
-                  Download
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
+                  {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
+                  {Array.isArray(message.content) ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
+                      {message.content.map((src) => (
+                        <Card
+                          key={src.url}
+                          className="rounded-lg overflow-hidden"
+                        >
+                          <div className="relative aspect-square">
+                            <Image fill alt="Generated" src={src.url} />
+                          </div>
+                          <CardFooter className="p-2">
+                            <Button
+                              onClick={() => window.open(src.url)}
+                              variant="secondary"
+                              className="w-full"
+                            >
+                              <Download className="h-4 w-4 mr-2" />
+                              Download
+                            </Button>
+                          </CardFooter>
+                        </Card>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm">{message.content}</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

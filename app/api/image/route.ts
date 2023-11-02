@@ -52,7 +52,7 @@ export async function POST(req: Request) {
     if (response) {
       const requestData = {
         question: prompt,
-        answer: JSON.stringify(response.data.data),
+        answer: response.data.data,
         createdBy: userId,
         id: Date.now(),
       };
