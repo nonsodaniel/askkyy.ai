@@ -60,7 +60,7 @@ const ImagePage = () => {
         role: "user",
         content: values.prompt,
       };
-      const latestMessages = [...messages, userMessage];
+      const latestMessages = [...messages, userMessage] as IMessage[];
       setMessages(latestMessages);
       const response = await axios.post("/api/image", values);
       console.log("response", response);

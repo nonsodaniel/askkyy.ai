@@ -2,7 +2,7 @@
 
 import * as z from "zod";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
@@ -14,13 +14,25 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 
 import { formSchema } from "./constants";
 import Header from "@/components/Header";
-import Loading from "@/components/ui/Loading";
-import { Empty } from "@/components/ui/Empty";
 import { useUpgradeModal } from "@/hooks/useModal";
+import { fetchPageData } from "@/utils/helpers";
+import { useAuth } from "@clerk/nextjs";
+import LoadingEmptyState from "@/components/LoadingEmptyState";
+import { cn } from "@/lib/utils";
+import { UserAvatar } from "@/components/ui/UserAvatar";
+import { BotAvatar } from "@/components/ui/BotAvatar";
+
+interface IMessage {
+  role: "user" | "assistant";
+  content: string | string[];
+}
 
 const MusicPage = () => {
+  const { userId } = useAuth();
+  const [isPageDataLoading, setIsPageDataLoading] = useState<boolean>(true);
+
   const router = useRouter();
-  const [music, setMusic] = useState<string>();
+  const [messages, setMessages] = useState<IMessage[]>([]);
   const upgradeModal = useUpgradeModal();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -34,11 +46,20 @@ const MusicPage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      setMusic(undefined);
+      const userMessage = {
+        role: "user",
+        content: values.prompt,
+      };
+      const latestMessages = [...messages, userMessage] as IMessage[];
+
+      setMessages(latestMessages);
 
       const response = await axios.post("/api/music", values);
+      setMessages((current: any) => [
+        ...current,
+        { content: response.data.audio, role: "assistant" },
+      ]);
 
-      setMusic(response.data.audio);
       form.reset();
     } catch (error: any) {
       if (error?.response?.status === 403) {
@@ -50,6 +71,11 @@ const MusicPage = () => {
       router.refresh();
     }
   };
+
+  useEffect(() => {
+    if (userId)
+      fetchPageData(userId!, "Music", setMessages, setIsPageDataLoading);
+  }, []);
 
   return (
     <div>
@@ -102,17 +128,50 @@ const MusicPage = () => {
             </Button>
           </form>
         </Form>
-        {isLoading && (
-          <div className="p-20">
-            <Loading />
+
+        <div className="space-y-4 mt-4">
+          <LoadingEmptyState
+            isLoading={isLoading}
+            isPageDataLoading={isPageDataLoading}
+            messages={messages}
+          />
+          <div className="flex flex-col gap-y-4">
+            {!!messages.length &&
+              messages.map((message, index) => {
+                return (
+                  <div
+                    key={index}
+                    className={cn(
+                      "p-8 w-full flex items-start gap-x-8 rounded-lg",
+                      message.role === "user"
+                        ? "bg-white border border-black/10"
+                        : "bg-muted"
+                    )}
+                  >
+                    {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
+
+                    {message.role === "user" ? (
+                      <p className="text-sm">{message.content}</p>
+                    ) : (
+                      <audio controls className="w-full mt-8">
+                        {Array.isArray(message.content) ? (
+                          message.content.map((src, srcIndex) => (
+                            <source
+                              key={srcIndex}
+                              src={src}
+                              type="audio/mpeg"
+                            />
+                          ))
+                        ) : (
+                          <source src={message.content} type="audio/mpeg" />
+                        )}
+                      </audio>
+                    )}
+                  </div>
+                );
+              })}
           </div>
-        )}
-        {!music && !isLoading && <Empty label="No music generated." />}
-        {music && (
-          <audio controls className="w-full mt-8">
-            <source src={music} />
-          </audio>
-        )}
+        </div>
       </div>
     </div>
   );
