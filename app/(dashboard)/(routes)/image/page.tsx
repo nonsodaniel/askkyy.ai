@@ -31,6 +31,7 @@ import { UserAvatar } from "@/components/ui/UserAvatar";
 import { cn } from "@/lib/utils";
 import { BotAvatar } from "@/components/ui/BotAvatar";
 import { useAuth } from "@clerk/nextjs";
+import { PageType } from "@/utils/types";
 interface IMessage {
   role: "user" | "assistant";
   content: string | Array<{ url: string }>;
@@ -63,10 +64,10 @@ const ImagePage = () => {
       const latestMessages = [...messages, userMessage] as IMessage[];
       setMessages(latestMessages);
       const response = await axios.post("/api/image", values);
-      console.log("response", response);
+
       setMessages((current) => [
         ...current,
-        { content: response.data, role: "assistant" },
+        { content: response.data.url, role: "assistant" },
       ]);
     } catch (error: any) {
       if (error?.response?.status === 403) {
@@ -85,8 +86,8 @@ const ImagePage = () => {
   return (
     <div>
       <Header
-        title="Image Generation"
-        description="Generate your Image."
+        title={`${PageType.Image} Generation`}
+        description={`Generate your ${PageType.Image}.`}
         icon={ImageIcon}
         iconColor="text-yellow-00"
         bgColor="bg-yellow-00/10"

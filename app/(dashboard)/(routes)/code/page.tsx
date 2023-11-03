@@ -20,6 +20,7 @@ import { fetchPageData } from "@/utils/helpers";
 import { useAuth } from "@clerk/nextjs";
 import LoadingEmptyState from "@/components/LoadingEmptyState";
 import PageForm from "@/components/PageForm";
+import { PageType } from "@/utils/types";
 const CodePage = () => {
   const { userId } = useAuth();
   const [messages, setMessages] = useState<ChatCompletionRequestMessage[][]>(
@@ -81,6 +82,7 @@ const CodePage = () => {
             form={form}
             handleSubmit={handleSubmit}
             isLoading={isLoading}
+            pageType={PageType.Code}
           />
         </div>
 
@@ -91,7 +93,7 @@ const CodePage = () => {
             messages={messages}
           />
           <div className="flex flex-col gap-y-4">
-            {messages.reverse().map((message, index) => {
+            {messages.map((message, index) => {
               console.log({ message });
               const isMessageArray = Array.isArray(message);
               return (

@@ -4,14 +4,10 @@ import * as z from "zod";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Music } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-
 import { formSchema } from "./constants";
 import Header from "@/components/Header";
 import { useUpgradeModal } from "@/hooks/useModal";
@@ -21,11 +17,8 @@ import LoadingEmptyState from "@/components/LoadingEmptyState";
 import { cn } from "@/lib/utils";
 import { UserAvatar } from "@/components/ui/UserAvatar";
 import { BotAvatar } from "@/components/ui/BotAvatar";
-
-interface IMessage {
-  role: "user" | "assistant";
-  content: string | string[];
-}
+import PageForm from "@/components/PageForm";
+import { IMessage, PageType } from "@/utils/types";
 
 const MusicPage = () => {
   const { userId } = useAuth();
@@ -35,7 +28,7 @@ const MusicPage = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const upgradeModal = useUpgradeModal();
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<z.infer<typeof formSchema> | FieldValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       prompt: "",
@@ -44,7 +37,9 @@ const MusicPage = () => {
 
   const isLoading = form.formState.isSubmitting;
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const handleSubmit = async (
+    values: z.infer<typeof formSchema> | FieldValues
+  ) => {
     try {
       const userMessage = {
         role: "user",
@@ -74,7 +69,7 @@ const MusicPage = () => {
 
   useEffect(() => {
     if (userId)
-      fetchPageData(userId!, "Music", setMessages, setIsPageDataLoading);
+      fetchPageData(userId!, PageType.Music, setMessages, setIsPageDataLoading);
   }, []);
 
   return (
@@ -87,48 +82,12 @@ const MusicPage = () => {
         bgColor="bg-teal-500/10"
       />
       <div className="px-4 lg:px-8">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="
-              rounded-lg 
-              border 
-              w-full 
-              p-4 
-              px-3 
-              md:px-6 
-              focus-within:shadow-sm
-              grid
-              grid-cols-12
-              gap-2
-            "
-          >
-            <FormField
-              name="prompt"
-              render={({ field }) => (
-                <FormItem className="col-span-12 lg:col-span-10">
-                  <FormControl className="m-0 p-0">
-                    <Input
-                      className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
-                      disabled={isLoading}
-                      placeholder="Describe your music"
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <Button
-              className="col-span-12 lg:col-span-2 w-full"
-              type="submit"
-              disabled={isLoading}
-              size="icon"
-            >
-              Generate
-            </Button>
-          </form>
-        </Form>
-
+        <PageForm
+          form={form}
+          handleSubmit={handleSubmit}
+          isLoading={isLoading}
+          pageType={PageType.Music}
+        />
         <div className="space-y-4 mt-4">
           <LoadingEmptyState
             isLoading={isLoading}

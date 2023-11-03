@@ -2,14 +2,21 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FormEventHandler } from "react";
+import { PageType } from "@/utils/types";
 
 interface IPageFormProps {
   form: any;
   handleSubmit: FormEventHandler<HTMLFormElement>;
   isLoading: boolean;
+  pageType: string;
 }
 
-const PageForm = ({ form, handleSubmit, isLoading }: IPageFormProps) => {
+const PageForm = ({
+  form,
+  handleSubmit,
+  pageType,
+  isLoading,
+}: IPageFormProps) => {
   return (
     <div>
       <Form {...form}>
@@ -19,14 +26,18 @@ const PageForm = ({ form, handleSubmit, isLoading }: IPageFormProps) => {
         >
           <FormField
             control={form.control}
-            name="prompt"
+            name={`${pageType}-prompt`}
             render={({ field }) => (
               <FormItem className="col-span-12 lg:col-span-10">
                 <FormControl className="m-0 p-0">
                   <Input
                     className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                     disabled={isLoading}
-                    placeholder="Which code do you want to generate?"
+                    placeholder={
+                      pageType === PageType.Conversation
+                        ? "Ask me anything..."
+                        : `Describe the ${pageType}...`
+                    }
                     {...field}
                   />
                 </FormControl>

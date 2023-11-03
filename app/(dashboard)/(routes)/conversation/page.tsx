@@ -18,6 +18,7 @@ import { fetchPageData } from "@/utils/helpers";
 import { useAuth } from "@clerk/nextjs";
 import PageForm from "@/components/PageForm";
 import LoadingEmptyState from "@/components/LoadingEmptyState";
+import { PageType } from "@/utils/types";
 
 const ConversationPage = () => {
   const { userId } = useAuth();
@@ -74,8 +75,8 @@ const ConversationPage = () => {
   return (
     <div>
       <Header
-        title={"Conversation Section"}
-        description={"Welcome to your AI powered Conversation"}
+        title={`${PageType.Conversation} Section`}
+        description={`Welcome to your AI powered ${PageType.Conversation}`}
         icon={MessageSquare}
         iconColor="text-lime-500"
         bgColor="bg-lime-500/10"
@@ -86,6 +87,7 @@ const ConversationPage = () => {
             form={form}
             handleSubmit={handleSubmit}
             isLoading={isLoading}
+            pageType={PageType.Conversation}
           />
         </div>
         <div className="space-y-4 mt-4">
@@ -95,7 +97,7 @@ const ConversationPage = () => {
             messages={messages}
           />
           <div className="flex flex-col gap-y-4">
-            {messages.reverse().map((message, index) => (
+            {messages.map((message, index) => (
               <>
                 <div
                   key={index}
