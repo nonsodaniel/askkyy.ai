@@ -68,7 +68,7 @@ export const fetchPageData = async (
     setIsPageDataLoading(true);
     fetchResponseFromFirebase(userId, type).then((res) => {
       const formattedMessages =
-        type === "Images" || type === "Music"
+        type === "Images" || type === "Music" || type === "Videos"
           ? formatFirebaseData(res).flat()
           : formatFirebaseData(res);
       setMessages(formattedMessages);

@@ -2,7 +2,7 @@
 
 import * as z from "zod";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
@@ -15,14 +15,24 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 
 import { formSchema } from "./constants";
 import Header from "@/components/Header";
-import { Empty } from "@/components/ui/Empty";
-import Loading from "@/components/ui/Loading";
 import { useUpgradeModal } from "@/hooks/useModal";
+import { useAuth } from "@clerk/nextjs";
+import { fetchPageData } from "@/utils/helpers";
+import LoadingEmptyState from "@/components/LoadingEmptyState";
+import { cn } from "@/lib/utils";
+import { UserAvatar } from "@/components/ui/UserAvatar";
+import { BotAvatar } from "@/components/ui/BotAvatar";
+
+interface IMessage {
+  role: "user" | "assistant";
+  content: string | string[];
+}
 
 const VideoPage = () => {
+  const { userId } = useAuth();
+  const [isPageDataLoading, setIsPageDataLoading] = useState<boolean>(true);
+  const [messages, setMessages] = useState<IMessage[]>([]);
   const router = useRouter();
-
-  const [video, setVideo] = useState<string>();
 
   const upgradeModal = useUpgradeModal();
 
@@ -37,11 +47,19 @@ const VideoPage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      setVideo(undefined);
+      const userMessage = {
+        role: "user",
+        content: values.prompt,
+      };
+      const latestMessages = [...messages, userMessage] as IMessage[];
 
+      setMessages(latestMessages);
       const response = await axios.post("/api/video", values);
+      setMessages((current: any) => [
+        ...current,
+        { content: response.data[0], role: "assistant" },
+      ]);
 
-      setVideo(response.data[0]);
       form.reset();
     } catch (error: any) {
       if (error?.response?.status === 403) {
@@ -53,6 +71,10 @@ const VideoPage = () => {
       router.refresh();
     }
   };
+  useEffect(() => {
+    if (userId)
+      fetchPageData(userId!, "Videos", setMessages, setIsPageDataLoading);
+  }, []);
 
   return (
     <div>
@@ -105,20 +127,52 @@ const VideoPage = () => {
             </Button>
           </form>
         </Form>
-        {isLoading && (
-          <div className="p-20">
-            <Loading />
+        <div className="space-y-4 mt-4">
+          <LoadingEmptyState
+            isLoading={isLoading}
+            isPageDataLoading={isPageDataLoading}
+            messages={messages}
+          />
+          <div className="flex flex-col gap-y-4">
+            {!!messages.length &&
+              messages.map((message, index) => {
+                return (
+                  <div
+                    key={index}
+                    className={cn(
+                      "p-8 w-full flex items-start gap-x-8 rounded-lg",
+                      message.role === "user"
+                        ? "bg-white border border-black/10"
+                        : "bg-muted"
+                    )}
+                  >
+                    {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
+
+                    {message.role === "user" ? (
+                      <p className="text-sm">{message.content}</p>
+                    ) : (
+                      <video
+                        controls
+                        className="w-full aspect-video mt-8 rounded-lg border bg-black"
+                      >
+                        {Array.isArray(message.content) ? (
+                          message.content.map((src, srcIndex) => (
+                            <source
+                              key={srcIndex}
+                              src={src}
+                              type="audio/mpeg" // You may need to specify the correct MIME type
+                            />
+                          ))
+                        ) : (
+                          <source src={message.content} type="audio/mpeg" />
+                        )}
+                      </video>
+                    )}
+                  </div>
+                );
+              })}
           </div>
-        )}
-        {!video && !isLoading && <Empty label="No video files generated." />}
-        {video && (
-          <video
-            controls
-            className="w-full aspect-video mt-8 rounded-lg border bg-black"
-          >
-            <source src={video} />
-          </video>
-        )}
+        </div>
       </div>
     </div>
   );
